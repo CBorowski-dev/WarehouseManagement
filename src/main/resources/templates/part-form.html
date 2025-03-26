@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title th:text="${isNew} ? 'Add New Electronic Part' : 'Edit Electronic Part'">Electronic Part</title>
+</head>
+<body>
+    <section>
+        <div class="row">
+            <div class="col-md-12">
+                <h2 th:text="${isNew} ? 'Add New Electronic Part' : 'Electronic Part Details'">Electronic Part</h2>
+                <hr>
+            </div>
+        </div>
+
+        <form th:action="@{/parts/save}" method="post" enctype="multipart/form-data" th:object="${part}">
+            <!-- Hidden ID field for updates -->
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <!-- Part Type -->
+                    <div class="mb-3">
+                        <label for="partTypeId" class="form-label required-field">Type</label>
+                        <select id="partTypeId" name="partTypeId" class="form-select" required>
+                            <option value="">-- Select Type --</option>
+                            <option th:each="type : ${partTypes}" 
+                                    th:value="${type.id}" 
+                                    th:text="${type.name}"
+                                    th:selected="${part.partType != null && part.partType.id == type.id}">
+                                Type Name
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('partType')}" th:errors="*{partType}">
+                            Part type is required
+                        </div>
+                    </div>
+                    
+                    <!-- Name -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label required-field">Name</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" 
+                               required maxlength="256" placeholder="e.g., ATmega32p, C64, Logitech M185">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                            Name is required
+                        </div>
+                    </div>
+                    
+                    <!-- Properties -->
+                    <div class="mb-3">
+                        <label for="properties" class="form-label required-field">Properties</label>
+                        <input type="text" class="form-control" id="properties" th:field="*{properties}" 
+                               required maxlength="256" placeholder="e.g., 5V, 2000mA, 300 kOhm">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('properties')}" th:errors="*{properties}">
+                            Properties are required
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <!-- Quantity -->
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label required-field">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" th:field="*{quantity}" 
+                               required min="0" placeholder="0">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">
+                            Quantity must be greater than or equal to 0
+                        </div>
+                    </div>
+                    
+                    <!-- Storage Location -->
+                    <div class="mb-3">
+                        <label for="storageLocationId" class="form-label required-field">Storage Location</label>
+                        <select id="storageLocationId" name="storageLocationId" class="form-select" required>
+                            <option value="">-- Select Location --</option>
+                            <option th:each="location : ${storageLocations}" 
+                                    th:value="${location.id}" 
+                                    th:text="${location.name}"
+                                    th:selected="${part.storageLocation != null && part.storageLocation.id == location.id}">
+                                Location Name
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('storageLocation')}" th:errors="*{storageLocation}">
+                            Storage location is required
+                        </div>
+                    </div>
+                    
+                    <!-- Image Upload -->
+                    <div class="mb-3">
+                        <label for="imageInput" class="form-label">Image (Optional, max 1MB)</label>
+                        <input type="file" class="form-control" id="imageInput" name="image" accept="image/*">
+                        <small class="text-muted">Upload an image of the electronic part (max 1MB)</small>
+                        
+                        <!-- Image Preview -->
+                        <div th:if="${base64Image != null}">
+                            <p class="mt-2 mb-1">Current Image:</p>
+                            <img th:src="@{'data:' + ${imageContentType} + ';base64,' + ${base64Image}}" 
+                                 alt="Part Image" class="image-preview" id="currentImage">
+                        </div>
+                        <img src="#" alt="Preview" class="image-preview" id="imagePreview" style="display: none;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between">
+                        <!-- Save Button -->
+                        <button type="submit" class="btn btn-primary">Save Part</button>
+                        
+                        <!-- Delete Button (only for existing parts) -->
+                        <form th:if="${!isNew}" id="deleteForm" th:action="@{/parts/{id}/delete(id=${part.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Delete Part</button>
+                        </form>
+                        
+                        <!-- Back Button -->
+                        <a th:href="@{/search}" class="btn btn-secondary">Back to Search</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</body>
+</html>

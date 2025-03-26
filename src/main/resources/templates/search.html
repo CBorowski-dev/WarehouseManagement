@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Search Electronic Parts</title>
+</head>
+<body>
+    <section>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Search Electronic Parts</h2>
+                <hr>
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Search Criteria</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/search}" method="post" th:object="${searchDTO}">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <input type="text" class="form-control" id="type" th:field="*{type}" placeholder="e.g., Capacitor">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="e.g., ATmega32p">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="properties" class="form-label">Properties</label>
+                            <input type="text" class="form-control" id="properties" th:field="*{properties}" placeholder="e.g., 5V, 2000mA">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="location" class="form-label">Storage Location</label>
+                            <input type="text" class="form-control" id="location" th:field="*{location}" placeholder="e.g., Carton 1">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <a th:href="@{/search/reset}" class="btn btn-secondary">New Search</a>
+                        <a th:href="@{/parts/new}" class="btn btn-success">Add New Part</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div th:if="${searchResults != null}">
+            <h3>Search Results</h3>
+            <div th:if="${#lists.isEmpty(searchResults)}" class="alert alert-info">
+                No electronic parts found matching your search criteria.
+            </div>
+            <div th:if="${!#lists.isEmpty(searchResults)}" class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Image</th>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Properties</th>
+                            <th>Quantity</th>
+                            <th>Storage Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="part : ${searchResults}" class="search-result-row" th:data-part-id="${part.id}">
+                            <td>
+                                <img th:if="${part.hasImage()}" 
+                                     th:src="@{'data:' + ${part.imageContentType}+ ';base64,' + ${part.imageData}}"
+                                     alt="Part Image" class="thumbnail">
+                                <span th:unless="${part.hasImage()}">No Image</span>
+                            </td>
+                            <td th:text="${part.partType.name}">Type</td>
+                            <td th:text="${part.name}">Name</td>
+                            <td th:text="${part.properties}">Properties</td>
+                            <td th:text="${part.quantity}">Quantity</td>
+                            <td th:text="${part.storageLocation.name}">Storage Location</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="text-muted"><small>Click on a row to view details</small></p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

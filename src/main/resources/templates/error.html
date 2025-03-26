@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Error</title>
+</head>
+<body>
+    <section>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2>Oops! Something went wrong</h2>
+                <hr>
+                <div class="alert alert-danger">
+                    <h4 th:text="${status} ?: 'Error'">500</h4>
+                    <p th:text="${error} ?: 'An unexpected error occurred'">Internal Server Error</p>
+                    <p th:text="${message} ?: ''">Error message</p>
+                </div>
+                <a th:href="@{/}" class="btn btn-primary">Go to Home Page</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
