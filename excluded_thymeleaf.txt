@@ -1,0 +1,1 @@
+th:src="@{'data:' + ${part.imageContentType} + ';base64,' + ${#base64.encode(part.imageData)}}"

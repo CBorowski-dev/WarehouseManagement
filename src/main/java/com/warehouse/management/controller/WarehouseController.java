@@ -163,4 +163,156 @@ public class WarehouseController {
     public String resetSearch() {
         return "redirect:/search";
     }
+    
+    // ===== Part Type Management =====
+    
+    // List all part types
+    @GetMapping("/part-types")
+    public String listPartTypes(Model model) {
+        List<PartType> partTypes = partTypeService.getAllPartTypes();
+        model.addAttribute("partTypes", partTypes);
+        
+        // Check which part types are in use
+        partTypes.forEach(type -> {
+            boolean inUse = partTypeService.isPartTypeInUse(type.getId());
+            model.addAttribute("inUse_" + type.getId(), inUse);
+            
+            if (inUse) {
+                long usageCount = partTypeService.getPartTypeUsageCount(type.getId());
+                model.addAttribute("usageCount_" + type.getId(), usageCount);
+            }
+        });
+        
+        // Add empty PartType for the create form
+        model.addAttribute("newPartType", new PartType());
+        
+        return "part-type-management";
+    }
+    
+    // Create new part type
+    @PostMapping("/part-types/create")
+    public String createPartType(@Valid @ModelAttribute("newPartType") PartType partType, 
+                                BindingResult result, 
+                                Model model, 
+                                RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            // If there are validation errors, return to the form
+            return listPartTypes(model);
+        }
+        
+        try {
+            partTypeService.createPartType(partType);
+            redirectAttributes.addFlashAttribute("successMessage", "Part type created successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        
+        return "redirect:/part-types";
+    }
+    
+    // Update part type
+    @PostMapping("/part-types/{id}/update")
+    public String updatePartType(@PathVariable Long id,
+                                @RequestParam("name") String name,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            PartType partType = new PartType();
+            partType.setName(name);
+            partTypeService.updatePartType(id, partType);
+            redirectAttributes.addFlashAttribute("successMessage", "Part type updated successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        
+        return "redirect:/part-types";
+    }
+    
+    // Delete part type
+    @PostMapping("/part-types/{id}/delete")
+    public String deletePartType(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            partTypeService.deletePartType(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Part type deleted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        
+        return "redirect:/part-types";
+    }
+    
+    // ===== Storage Location Management =====
+    
+    // List all storage locations
+    @GetMapping("/storage-locations")
+    public String listStorageLocations(Model model) {
+        List<StorageLocation> storageLocations = storageLocationService.getAllStorageLocations();
+        model.addAttribute("storageLocations", storageLocations);
+        
+        // Check which storage locations are in use
+        storageLocations.forEach(location -> {
+            boolean inUse = storageLocationService.isStorageLocationInUse(location.getId());
+            model.addAttribute("inUse_" + location.getId(), inUse);
+            
+            if (inUse) {
+                long usageCount = storageLocationService.getStorageLocationUsageCount(location.getId());
+                model.addAttribute("usageCount_" + location.getId(), usageCount);
+            }
+        });
+        
+        // Add empty StorageLocation for the create form
+        model.addAttribute("newStorageLocation", new StorageLocation());
+        
+        return "storage-location-management";
+    }
+    
+    // Create new storage location
+    @PostMapping("/storage-locations/create")
+    public String createStorageLocation(@Valid @ModelAttribute("newStorageLocation") StorageLocation storageLocation, 
+                                      BindingResult result, 
+                                      Model model, 
+                                      RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            // If there are validation errors, return to the form
+            return listStorageLocations(model);
+        }
+        
+        try {
+            storageLocationService.createStorageLocation(storageLocation);
+            redirectAttributes.addFlashAttribute("successMessage", "Storage location created successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        
+        return "redirect:/storage-locations";
+    }
+    
+    // Update storage location
+    @PostMapping("/storage-locations/{id}/update")
+    public String updateStorageLocation(@PathVariable Long id,
+                                      @RequestParam("name") String name,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            StorageLocation storageLocation = new StorageLocation();
+            storageLocation.setName(name);
+            storageLocationService.updateStorageLocation(id, storageLocation);
+            redirectAttributes.addFlashAttribute("successMessage", "Storage location updated successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        
+        return "redirect:/storage-locations";
+    }
+    
+    // Delete storage location
+    @PostMapping("/storage-locations/{id}/delete")
+    public String deleteStorageLocation(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            storageLocationService.deleteStorageLocation(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Storage location deleted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        
+        return "redirect:/storage-locations";
+    }
 }
