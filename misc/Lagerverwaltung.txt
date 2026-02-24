@@ -1,0 +1,23 @@
+Erstelle eine Lagerverwaltung für Elektronik-Teile, die folgende Technologien verwenden soll:
+
+- Spring Boot in Version 3.4.4 für Backend
+- HTMX / Thymeleaf für das Frontend
+- PostgreSQL als Datenbank
+
+Folgende fachliche Anforderungen sind gegeben:
+Eine Eingabemaske, über die neue Elektronik-Teile spezifiziert werden können:
+- Typ, als Auswahlbox. Muss-Feld. Beispiele hierfür: "Kondensator", "Netzteil", "Widerstand", "Mikrocontroller" und weitere. Die Typen sollen in einer Tabelle in der Datenbank hinterlegt sein.
+- Bezeichnung als Freitext-Feld. Muss-Feld. Beispiele hierfür: "ATmega32p", "C64", "Logitech M185" und weitere. In der Datenbank als VARCHAR mit einer maximalen Länge von 256 Zeichen abgelegt.
+- Eigenschaften als Freitext-Feld. Muss-Feld. Beispiele hierfür: "5V, 2000mA", "300 kOhm" und weitere. In der Datenbank als VARCHAR mit einer maximalen Länge von 256 Zeichen abgelegt.
+- Menge als ganzzahliger Wert größer, gleich Null. Muss-Feld.
+- Lagerort, als Auswahlbox. Muss-Feld. Beispile hierfür: "Karton 1", "Karton 2", "Regal oben", "Schublade unten" und weitere. Der Lagerort soll in einer Tabelle in der Datenbank hinterlegt sein.
+- Optional die Möglichkeit ein Bild des Elektronik-Teiles hochzuladen und zu speichern. Das Bild darf eine Größe vom 1 MB nicht überschreiten.
+Die Eingabemaske soll einen Button "Teil speichern" enthalten. Wenn Alle Muss-Felder spezifiziert sind, dann wird dieser Button aktiviert. Beim Anklicken sollen die eingegebenen Daten in die Datenbank gespeichert werden.
+
+Eine Suchmaske, über die ich nach den folgenden Felder suchen kann: Typ, Bezeichnung, Eigenschaften, Lagerort. Es muss mindestens in einem dieser Felder ein Suchbegriff eingegeben sein. Es können aber auch in mehreren der Felder Suchbegriffe eingegeben werden. Bei der Suche werden nur Suchergebnisse angezeigt, die alle Suchbegriffe erfüllen. Das Ergebnis einer Suche wird in tabellarischer Form angezeigt. Pro Tabellenzeile wird ein Elektronik-Teil angezeigt. Die angezeigten Daten sind Typ, Bezeichnung, Eigenschaften, Menge, Lagerort und, falls vorhanden, ein Preview des hinterlegten Bildes. Beim Anklicken einer Ergebniszeile wird das hinterlegte Suchergebnis in einer Detailmaske (siehe weiter unten) angezeigt.
+Auf der Suchmaske soll es einen Button "Neue Suche" geben. Beim Anklicken des Button werden eventuell eingegebene Suchbegriffe und eventuell angezeigte Suchergebnisse gelöscht.
+
+Eine Detailmaske, in der die Daten eines Elektronik-Teils angezeigt werden. Die Maske soll, falls möglich, die Eingabemaske wieder verwenden. In der Detailmaske soll es möglich sein, bestehende Daten zu ändern und die geänderten Daten wieder in die Datenbank zurückzu schreiben. Dazu soll, sobald eine Änderung an den Daten gemacht wurde und alle Muss-Felder vorhanden sind, ein Button "Teil speichern" aktiviert werden. Beim Anklicken sollen die geänderten Daten in die Datenbank gespeichert werden. Ebenso soll es auf der Detailmaske einen Button "Teil löschen" geben. Dieser ist immer aktiviert. Beim Anklicken soll der Nutzer gefragt werden, ob er das angezeigte Elektronik-Teil wirklich löschen möchte? Als Antwortmöglichkeit wird ihm "Ja" und "Nein" angezeigt. Beim Anklicken von "Nein" wird der Löschen-Prozess abgebrochen. Beim Anklicken von "Ja" wird das gerade angezeigte Elektronik-Teil in der Datenbank gelöscht.
+
+Jedes in der Datenbank gespeicherte Elektronik-Teil soll beim Einfügen in die Datenbank eine eindeutige ID erhalten. Diese ID soll zur Löschung und zur Aktualisierung eines Elektronik-Teils verwendet werden. Diese ID soll nicht im Frontend angezeigt werden.
+
